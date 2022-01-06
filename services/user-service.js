@@ -1,5 +1,5 @@
 const ErrorHandler = require("./../utils/error-handler.js");
-
+const { validateRefreshToken } = require('./../utils/tokens')
 const { User } = require("./../models/index.js");
 const bcrypt = require("bcrypt");
 const { v4: uuid } = require("uuid");
@@ -11,7 +11,7 @@ const {
 const { generateTokens } = require("../utils/tokens.js");
 const { sendActivationMail } = require("./mail-service.js");
 
-const signup = async (email, password, firstName, lastName, role) => {
+const signup = async (email, password, firstName, lastName, role = "ADMIN") => {
   const oldUser = await User.findOne({ where: { email } });
 
   if (oldUser) {
@@ -44,6 +44,27 @@ const activate = async (link) => {
   user.isActivated = true;
   await user.save();
 };
+
+const refresh = async (token) => {
+  if (!token) {
+    throw ErrorHandler.UnauthorizedError()
+  }
+  const userData = validateRefreshToken(token)
+
+  if (!userData) {
+    throw ErrorHandler.UnauthorizedError()
+  }
+
+  const user = await User.findOne({ where: { id: userData.id } })
+
+  if (!user) {
+    throw ErrorHandler.BadRequest(user + " NOT_FOUND")
+  }
+
+  const tokens = generateTokens({ id: user.id, email: user.email, role: user.role })
+  return tokens
+}
+
 const getAll = async (status) => {
   if (status === 'active') {
     return await User.findAll({ where: { isActivated: true } })
@@ -71,4 +92,5 @@ module.exports = {
   getAll,
   login,
   activate,
+  refresh
 };

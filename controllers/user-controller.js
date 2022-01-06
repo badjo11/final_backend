@@ -1,8 +1,19 @@
 const ErrorHandler = require("./../utils/error-handler.js");
 const UserService = require("./../services/user-service");
+const { LocalStorage } = require('node-localstorage');
+const { validationResult } = require("express-validator");
+let localStorage = new LocalStorage('./scratch');
 
 const signup = async (req, res, next) => {
+
+
   try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return next(ErrorHandler.BadRequest('Validation error', errors.array()))
+    }
+
     const { email, password, firstName, lastName } = req.body;
 
     const userData = await UserService.signup(
@@ -13,6 +24,7 @@ const signup = async (req, res, next) => {
     );
 
     res.json(userData);
+
   } catch (e) {
     next(e);
   }
@@ -27,7 +39,15 @@ const login = async (req, res, next) => {
     next(e);
   }
 };
-
+const refresh = async (req, res, next) => {
+  try {
+    const { refresh_token } = req.headers
+    const userData = await UserService.refresh(refresh_token)
+    res.json(userData)
+  } catch (error) {
+    next(error)
+  }
+}
 const getAll = async (req, res, next) => {
   try {
     const users = await UserService.getAll();
@@ -51,4 +71,5 @@ module.exports = {
   getAll,
   login,
   activate,
+  refresh
 };

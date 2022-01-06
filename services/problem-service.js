@@ -74,7 +74,12 @@ const getAll = async ({ offset, limit, q, tag }) => {
   })
 }
 
+const deleteOne = async (id) => {
+  return await Problem.destroy({ where: { id } })
+}
+
 module.exports = {
   create,
-  getAll
+  getAll,
+  deleteOne
 };
