@@ -4,59 +4,69 @@ const sequelize = require("./../db.js");
 
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  firstName: { type: DataTypes.STRING },
-  lastName: { type: DataTypes.STRING },
+  username: { type: DataTypes.STRING },
   role: { type: DataTypes.STRING, defaultValue: "USER" },
   email: { type: DataTypes.STRING, allowNull: false, unique: true },
   password: { type: DataTypes.STRING, allowNull: false },
-  image: { type: DataTypes.STRING },
   isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
   activationLink: { type: DataTypes.STRING },
 });
 
-const Problem = sequelize.define("problem", {
+const Product = sequelize.define("product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  title: { type: DataTypes.STRING, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   description: { type: DataTypes.TEXT, allowNull: false },
-  tag: { type: DataTypes.ENUM(['JavaScript', 'Python', 'Java', 'Kotlin']) },
+  brand: { type: DataTypes.ENUM(['Jordan', 'Lebron', 'Kobe Bryant', 'Under Armour']) },
+  price: { type: DataTypes.INTEGER },
+  image: { type: DataTypes.STRING }
 });
 
-const Picture = sequelize.define("picture", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  image: { type: DataTypes.STRING },
-});
+// const Picture = sequelize.define("picture", {
+//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+//   image: { type: DataTypes.STRING },
+// });
 
 const Comment = sequelize.define("comment", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   text: { type: DataTypes.TEXT, allowNull: false },
 });
 
-const Reply = sequelize.define("reply", {
+const Like = sequelize.define("like", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  text: { type: DataTypes.TEXT, allowNull: false },
+  status: { type: DataTypes.BOOLEAN, allowNull: false },
 });
-User.hasMany(Problem);
-Problem.belongsTo(User);
 
-User.hasMany(Reply);
-Reply.belongsTo(User);
+const Rating = sequelize.define("rating", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  rate: { type: DataTypes.INTEGER, allowNull: false },
+});
 
-User.hasMany(Comment);
-Comment.belongsTo(User);
+User.hasMany(Comment)
+Comment.belongsTo(User)
 
-Problem.hasMany(Reply);
-Reply.belongsTo(Problem);
+Product.hasMany(Comment)
+Comment.belongsTo(Product)
 
-Problem.hasMany(Picture);
-Picture.belongsTo(Problem);
+User.hasMany(Like)
+Like.belongsTo(User)
 
-Reply.hasMany(Comment);
-Comment.belongsTo(Reply);
+Product.hasMany(Like)
+Like.belongsTo(Product)
+
+User.hasMany(Rating)
+Rating.belongsTo(User)
+
+Product.hasMany(Rating)
+Rating.belongsTo(Product)
+
+// User.hasMany(Comment);
+// Comment.belongsTo(User);
+
 
 module.exports = {
   User,
-  Problem,
-  Picture,
+  Product,
+  Like,
   Comment,
-  Reply,
+  Rating,
 };

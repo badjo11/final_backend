@@ -11,7 +11,7 @@ const {
 const { generateTokens } = require("../utils/tokens.js");
 const { sendActivationMail } = require("./mail-service.js");
 
-const signup = async (email, password, firstName, lastName, role = "ADMIN") => {
+const signup = async (email, password, username, role) => {
   const oldUser = await User.findOne({ where: { email } });
 
   if (oldUser) {
@@ -23,8 +23,7 @@ const signup = async (email, password, firstName, lastName, role = "ADMIN") => {
   const user = await User.create({
     email,
     password: hashedPassword,
-    firstName,
-    lastName,
+    username,
     role,
     activationLink,
   });
@@ -32,7 +31,8 @@ const signup = async (email, password, firstName, lastName, role = "ADMIN") => {
     email,
     `${process.env.API}/api/user/activate/${activationLink}`
   );
-  const tokens = generateTokens({ id: user.id, email, role });
+  const tokens = generateTokens({ id: user.id, email, role, username });
+  console.log(tokens);
   return tokens;
 };
 
@@ -61,7 +61,7 @@ const refresh = async (token) => {
     throw ErrorHandler.BadRequest(user + " NOT_FOUND")
   }
 
-  const tokens = generateTokens({ id: user.id, email: user.email, role: user.role })
+  const tokens = generateTokens({ id: user.id, email: user.email, role: user.role, username: user.username })
   return tokens
 }
 
@@ -84,7 +84,7 @@ const login = async (email, password) => {
   if (!comparePassword) {
     throw ErrorHandler.BadRequest(WRONG_CREDENTIALS);
   }
-  const tokens = generateTokens({ id: user.id, email, role: user.role });
+  const tokens = generateTokens({ id: user.id, email, role: user.role, username: user.username });
   return tokens;
 };
 module.exports = {

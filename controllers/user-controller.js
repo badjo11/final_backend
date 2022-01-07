@@ -14,13 +14,13 @@ const signup = async (req, res, next) => {
       return next(ErrorHandler.BadRequest('Validation error', errors.array()))
     }
 
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, username } = req.body;
 
     const userData = await UserService.signup(
       email,
       password,
-      firstName,
-      lastName
+      username
+
     );
 
     res.json(userData);
