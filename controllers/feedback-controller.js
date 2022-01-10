@@ -1,13 +1,13 @@
 const { CREATE_SUCCESS, DELETE_SUCCESS } = require("../utils/consts");
-const CommentService = require("../services/comment-service");
+const FeedbackService = require("../services/feedback-service");
 
 
 
 const create = async (req, res, next) => {
     try {
-        const { text, productId, userId, owner } = req.body
+        const { rate, productId, userId } = req.body
         const { id } = req.user
-        await CommentService.create(text, productId, id, owner);
+        await FeedbackService.create(rate, productId, id);
         res.json(CREATE_SUCCESS);
     } catch (error) {
         console.log(error)
@@ -17,9 +17,9 @@ const create = async (req, res, next) => {
 const getAll = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const comments = await CommentService.getAll(id)
-        // console.log(comments)
-        res.json(comments)
+        const ratings = await FeedbackService.getAll(id)
+        // console.log(ratings)
+        res.json(ratings)
     } catch (error) {
         console.log(error)
         next(error)
@@ -27,10 +27,10 @@ const getAll = async (req, res, next) => {
 }
 const update = async (req, res, next) => {
     try {
-        const { text } = req.body;
+        const { rate } = req.body;
 
         const { id } = req.params;
-        await CommentService.update(id, text);
+        await FeedbackService.update(id, rate);
         res.json({ message: DELETE_SUCCESS });
     } catch (error) {
         console.log(error)
@@ -40,7 +40,7 @@ const update = async (req, res, next) => {
 const deleteOne = async (req, res, next) => {
     try {
         const { id } = req.params
-        await CommentService.deleteOne(id)
+        await FeedbackService.deleteOne(id)
         res.json({ message: DELETE_SUCCESS })
     } catch (error) {
         console.log(error);
@@ -51,8 +51,8 @@ const getOne = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const comment = await CommentService.getOne(id);
-        res.json(comment);
+        const rating = await FeedbackService.getOne(id);
+        res.json(rating);
     } catch (error) {
         console.log(error);
         next(error)

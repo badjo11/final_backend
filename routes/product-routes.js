@@ -10,8 +10,8 @@ router.post("/create", auth, ProductController.create);
 router.delete(
     "/:id",
     auth,
-    // checkRole("ADMIN", "USER"),
-    // checkPermission(Product),
+    checkRole("ADMIN", "USER"),
+    checkPermission(Product),
     ProductController.deleteOne
 );
 router.get("/", ProductController.getAll);

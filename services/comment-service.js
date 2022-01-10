@@ -2,8 +2,8 @@ const ErrorHandler = require("./../utils/error-handler.js");
 const { Comment } = require("./../models/index.js");
 
 
-const create = async (text, productId, userId) => {
-    const product = await Comment.create({ text, productId, userId });
+const create = async (text, productId, userId, owner) => {
+    const product = await Comment.create({ text, productId, userId, owner });
 
     return product
 };
@@ -26,7 +26,7 @@ const getOne = async (id) => {
     const comment = await Comment.findOne({
         where: { id },
     });
-    console.log(comment);
+    // console.log(comment);
     return comment.dataValues;
 };
 

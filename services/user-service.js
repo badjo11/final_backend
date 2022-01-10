@@ -11,7 +11,7 @@ const {
 const { generateTokens } = require("../utils/tokens.js");
 const { sendActivationMail } = require("./mail-service.js");
 
-const signup = async (email, password, username, role) => {
+const signup = async (email, password, username, role = "USER") => {
   const oldUser = await User.findOne({ where: { email } });
 
   if (oldUser) {
@@ -74,7 +74,9 @@ const getAll = async (status) => {
   }
   return await User.findAll();
 };
-
+const getOne = async (id) => {
+  return await User.findOne({ where: { id } })
+}
 const login = async (email, password) => {
   const user = await User.findOne({ where: { email } });
   if (!user) {
@@ -92,5 +94,6 @@ module.exports = {
   getAll,
   login,
   activate,
-  refresh
+  refresh,
+  getOne
 };

@@ -56,7 +56,16 @@ const getAll = async (req, res, next) => {
     next(e);
   }
 };
-
+const getOne = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const user = await UserService.getOne(id)
+    res.json(user)
+  } catch (error) {
+    console.log(error);
+    next(error)
+  }
+}
 const activate = async (req, res, next) => {
   try {
     const { link } = req.params;
@@ -70,6 +79,7 @@ module.exports = {
   signup,
   getAll,
   login,
+  getOne,
   activate,
   refresh
 };

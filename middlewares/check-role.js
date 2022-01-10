@@ -10,11 +10,11 @@ const checkRole = (...roles) => (req, res, next) => {
     const { user } = req
     try {
         if (!roles.includes(user.role)) {
-            throw ErrorHandler.ForbiddenError("Permission denied")
+            throw ErrorHandler.ForbiddenError("Permission denied, checkrole")
         }
         next()
     } catch (error) {
-        next(ErrorHandler.ForbiddenError('Permission denied'))
+        next(ErrorHandler.ForbiddenError('Permission denied, checkrole'))
     }
 }
 

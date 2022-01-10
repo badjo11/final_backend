@@ -1,13 +1,13 @@
 const { CREATE_SUCCESS, DELETE_SUCCESS } = require("../utils/consts");
-const CommentService = require("../services/comment-service");
+const LikeServices = require("../services/like-service");
 
 
 
 const create = async (req, res, next) => {
     try {
-        const { text, productId, userId, owner } = req.body
+        const { status, productId, userId } = req.body
         const { id } = req.user
-        await CommentService.create(text, productId, id, owner);
+        await LikeServices.create(status, productId, id);
         res.json(CREATE_SUCCESS);
     } catch (error) {
         console.log(error)
@@ -17,9 +17,9 @@ const create = async (req, res, next) => {
 const getAll = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const comments = await CommentService.getAll(id)
-        // console.log(comments)
-        res.json(comments)
+        const like = await LikeServices.getAll(id)
+        // console.log(like)
+        res.json(like)
     } catch (error) {
         console.log(error)
         next(error)
@@ -27,10 +27,10 @@ const getAll = async (req, res, next) => {
 }
 const update = async (req, res, next) => {
     try {
-        const { text } = req.body;
+        const { status } = req.body;
 
         const { id } = req.params;
-        await CommentService.update(id, text);
+        await LikeServices.update(id, status);
         res.json({ message: DELETE_SUCCESS });
     } catch (error) {
         console.log(error)
@@ -40,7 +40,7 @@ const update = async (req, res, next) => {
 const deleteOne = async (req, res, next) => {
     try {
         const { id } = req.params
-        await CommentService.deleteOne(id)
+        await LikeServices.deleteOne(id)
         res.json({ message: DELETE_SUCCESS })
     } catch (error) {
         console.log(error);
@@ -51,8 +51,8 @@ const getOne = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const comment = await CommentService.getOne(id);
-        res.json(comment);
+        const like = await LikeServices.getOne(id);
+        res.json(like);
     } catch (error) {
         console.log(error);
         next(error)

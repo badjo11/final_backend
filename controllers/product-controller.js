@@ -18,8 +18,8 @@ const create = async (req, res, next) => {
 const getAll = async (req, res, next) => {
   try {
     let { q, page, limit, brand } = req.query
-    console.log(req.query)
-    console.log(q, page)
+    // console.log(req.query)
+    // console.log(q, page)
     page = page || 1
     limit = limit || 3
     const offset = page * limit - limit
